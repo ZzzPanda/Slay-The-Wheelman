@@ -52,8 +52,12 @@ func _ready():
 		# debug build uses project directory
 		_EXTERNAL_FILE_PREFIX = "res://"
 		DebugLogger.log_line("Debug Base Directory: " + _EXTERNAL_FILE_PREFIX, Color.LIGHT_BLUE)
+	elif OS.get_name() == "Android":
+		# Android APK has resources bundled, use res://
+		_EXTERNAL_FILE_PREFIX = "res://"
+		DebugLogger.log_line("Android Base Directory: " + _EXTERNAL_FILE_PREFIX, Color.LIGHT_BLUE)
 	else:
-		# release build uses exe folder for user ease of access
+		# release build uses exe folder for user ease of access (PC)
 		_EXTERNAL_FILE_PREFIX = OS.get_executable_path().get_base_dir() + "/"
 		DebugLogger.log_line("Build Base Directory: " + _EXTERNAL_FILE_PREFIX, Color.LIGHT_BLUE)
 		
