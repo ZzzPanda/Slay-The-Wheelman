@@ -57,24 +57,17 @@ cd "$PROJECT_DIR"
 # Create builds directory if not exists
 mkdir -p builds
 
-# Check export presets
-if [ ! -f "export_presets.cfg" ]; then
-    echo ""
-    echo "ERROR: export_presets.cfg not found!"
-    echo "Please ensure export_presets.cfg exists in the project root."
-    exit 1
-fi
-
 # Build command
+# Note: export_presets.cfg has the actual export path configured
 echo ""
 if [ "$BUILD_TYPE" = "release" ]; then
     echo "Building Android Release..."
-    echo "Output: builds/android_release.apk"
-    godot --headless --export-release "Android Release" builds/android_release.apk
+    echo "Output: builds/android/Slay-the-robot-release.apk"
+    godot --headless --export-release "Android" builds/android/Slay-the-robot-release.apk
 else
     echo "Building Android Debug..."
     echo "Output: builds/android_debug.apk"
-    godot --headless --export-debug "Android Debug" builds/android_debug.apk
+    godot --headless --export-debug "Android" builds/android_debug.apk
 fi
 
 echo ""
