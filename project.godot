@@ -16,7 +16,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="SlayTheRobot"
 run/main_scene="res://scenes/Root.tscn"
-config/features=PackedStringArray("4.6")
+config/features=PackedStringArray("4.5")
 config/icon="uid://8kopj5luv8dc"
 
 [autoload]
@@ -49,6 +49,10 @@ window/stretch/aspect="expand"
 
 display/canvas_resize_policy=2
 display/safe_area_margin=0.0
+
+[dotnet]
+
+project/assembly_name="Slay The Robot"
 
 [input]
 
