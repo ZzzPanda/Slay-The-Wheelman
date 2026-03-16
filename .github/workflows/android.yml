@@ -1,0 +1,41 @@
+name: Build Android
+
+on:
+  push:
+    branches: [ main, feat/* ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Godot
+        uses: abarichello/godot-ci@v4.2.1
+        with:
+          godot-version: "4.6.1"
+          
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+          
+      - name: Export Android Debug
+        run: |
+          mkdir -p builds
+          godot --headless --export-debug "Android" "builds/android-debug.apk"
+          
+      - name: Export Android Release
+        run: |
+          mkdir -p builds
+          godot --headless --export-release "Android" "builds/android-release.apk"
+          
+      - name: Upload APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apks
+          path: builds/*.apk
+          retention-days: 7
