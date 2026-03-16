@@ -122,7 +122,7 @@ func _update_background() -> void:
 			background_texture_path = event_data.event_background_texture_path
 	
 	if background_texture_path != "":
-		background_button.texture_normal = FileLoader.load_texture(background_texture_path)
+		background_button.texture_normal = load(background_texture_path)
 	
 
 func set_combat_display_visibility(display_visibility: bool) -> void:

@@ -10,7 +10,7 @@ func init(_character_object_id: String) -> void:
 	var character_data: CharacterData = Global.get_character_data(character_object_id)
 	if character_data != null:
 		if character_data.character_icon_texture_path != "":
-			texture_normal = FileLoader.load_texture(character_data.character_icon_texture_path)
+			texture_normal = load(character_data.character_icon_texture_path)
 
 func _on_button_up():
 	Signals.character_selected.emit(character_object_id)

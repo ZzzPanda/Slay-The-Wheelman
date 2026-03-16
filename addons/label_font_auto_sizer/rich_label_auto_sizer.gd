@@ -114,7 +114,7 @@ func _update_texture_caches(new_text: String) -> void:
 	for re_match in re_matches:
 		var path = re_match.get_string("path")
 		if not path.begins_with("res://"):
-			var _image = FileLoader.load_texture(path)	# loads images then takes over the path so it works in the RichTextLabel
+			var _image = load(path)	# loads images then takes over the path so it works in the RichTextLabel
 
 ## Goes through the resources in the label and sets the base font size value.
 ## Priority: Override Theme Font Size > Theme Font Size. (RichTextLabels don't allow Label Settings)
