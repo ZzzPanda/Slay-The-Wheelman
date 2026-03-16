@@ -5,9 +5,7 @@ class_name ArtifactData
 @export var artifact_description: String = ""
 
 func get_artifact_name() -> String:
-	if has_node("/root/Translation"):
-		return Translation.t(artifact_name)
-	return artifact_name
+	return Translation.t(artifact_name)
 
 @export var artifact_texture_path: String = "sprites/artifacts/artifact_white.png"
 @export var artifact_script_path: String = "res://scripts/artifacts/BaseArtifact.gd"
