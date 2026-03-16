@@ -128,7 +128,9 @@ func register_run_modifier_interceptors() -> void:
 
 func _on_run_started():
 	var character_data: CharacterData = Global.get_player_character_data()
-	sprite.texture = FileLoader.load_texture(character_data.character_texture_path)
+	# sprite.texture = FileLoader.load_texture(character_data.character_texture_path)
+	sprite.texture = load(character_data.character_texture_path)
+
 	
 	reset_block()
 	clear_all_status_effects()
