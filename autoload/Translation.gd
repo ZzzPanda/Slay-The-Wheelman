@@ -73,6 +73,10 @@ func _parse_csv(path: String) -> Dictionary:
 ## Main translation function
 ## Usage: Translation.t("key")
 func t(key: String) -> String:
+	# If translations not loaded yet, return key as-is
+	if translations.is_empty():
+		return key
+	
 	# First try current locale
 	if translations.has(current_locale):
 		if translations[current_locale].has(key):
