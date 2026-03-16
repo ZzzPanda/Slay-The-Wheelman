@@ -19,7 +19,7 @@ func init(_artifact_data: ArtifactData):
 	texture_normal = load(artifact_data.artifact_texture_path)
 	update_artifact_counter()
 	
-	tooltip_text = artifact_data.artifact_name
+	tooltip_text = artifact_data.get_artifact_name()
 	if artifact_data.artifact_description != "":
 		if len(artifact_data.ARTIFACT_RARITIES.keys()) > artifact_data.artifact_rarity:
 			tooltip_text += "\n" + artifact_data.ARTIFACT_RARITIES.keys()[artifact_data.artifact_rarity]

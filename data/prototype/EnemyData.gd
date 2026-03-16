@@ -3,6 +3,12 @@ class_name EnemyData
 
 @export var enemy_object_id: String = ""	# prototype id for this enemy type
 @export var enemy_name: String = ""
+
+func get_enemy_name() -> String:
+	if has_node("/root/Translation"):
+		return Translation.tr(enemy_name)
+	return enemy_name
+
 @export var enemy_texture_path: String = "sprites/enemies/enemy_blue_small.png"
 
 @export var enemy_health: int = 20

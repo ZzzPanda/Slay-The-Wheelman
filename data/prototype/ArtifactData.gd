@@ -3,6 +3,12 @@ class_name ArtifactData
 
 @export var artifact_name: String = ""
 @export var artifact_description: String = ""
+
+func get_artifact_name() -> String:
+	if has_node("/root/Translation"):
+		return Translation.tr(artifact_name)
+	return artifact_name
+
 @export var artifact_texture_path: String = "sprites/artifacts/artifact_white.png"
 @export var artifact_script_path: String = "res://scripts/artifacts/BaseArtifact.gd"
 @export var artifact_counter: int = 0 # do not adjust directly
