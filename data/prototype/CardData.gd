@@ -109,17 +109,13 @@ func _to_string():
 	return get_card_name()
 
 func get_card_name() -> String:
-	var base_name: String = card_name
-	# Apply translation
-	base_name = Translation.t(card_name)
-	
 	if card_upgrade_amount > 0:
 		if card_upgrade_amount > 1:
-			return base_name + "+" + str(card_upgrade_amount - 1)
+			return card_name + "+" + str(card_upgrade_amount - 1)
 		else:
-			return base_name + "+"
+			return card_name + "+"
 	else:
-		return base_name
+		return card_name
 
 func get_card_deck_location() -> int:
 	# gets where the card exists in combat
