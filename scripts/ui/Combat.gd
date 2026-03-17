@@ -471,8 +471,13 @@ func start_turn_animation() -> void:
 #region 镜头控制
 
 func _input(event: InputEvent):
-	# 只在战斗中启用镜头控制
+	# 只在战斗中启用镜头控制 (且不是主菜单)
 	if not visible:
+		return
+	
+	# 检查是否在战斗中 (通过检测是否有敌人在场)
+	var enemies = get_tree().get_nodes_in_group("enemies")
+	if len(enemies) == 0:
 		return
 	
 	# 鼠标滚轮缩放
