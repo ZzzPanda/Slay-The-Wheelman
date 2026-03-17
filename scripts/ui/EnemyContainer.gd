@@ -60,6 +60,7 @@ func spawn_enemy(enemy_object_id: String, container: Control = automatic_enemy_c
 	
 	# 设置默认位置 (右侧)
 	enemy.position_x = 600.0 + randf() * 200
+	enemy._update_visual_position()
 	
 	return enemy
 

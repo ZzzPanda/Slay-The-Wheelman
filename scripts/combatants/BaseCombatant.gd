@@ -4,10 +4,31 @@ class_name BaseCombatant
 
 # 位置系统
 var position_x: float = 0.0  # 一维坐标 (0-1000)
+const COMBAT_WIDTH: float = 1000.0  # 战斗区域逻辑宽度
 
 ## 设置战斗单位位置 (一维坐标)
 func set_position_x(x: float) -> void:
 	position_x = clamp(x, 0.0, 1000.0)
+	_update_visual_position()
+
+## 根据 position_x 更新屏幕位置
+func _update_visual_position() -> void:
+	# 如果不在树中，稍后更新
+	if not is_inside_tree():
+		call_deferred("_update_visual_position")
+		return
+	
+	# 获取战斗区域宽度 (从视口)
+	var viewport_width = get_viewport_rect().size.x
+	# 战斗区域左右边距
+	var combat_margin = 100.0
+	var combat_area_width = viewport_width - combat_margin * 2
+	
+	# 将逻辑坐标 (0-1000) 转换为屏幕坐标
+	var screen_x = combat_margin + (position_x / COMBAT_WIDTH) * combat_area_width
+	
+	# 更新节点位置
+	position.x = screen_x - size.x / 2
 
 ## 获取战斗单位位置
 func get_position_x() -> float:

@@ -133,6 +133,7 @@ func _on_run_started():
 
 	# 初始化位置 (玩家在左侧)
 	position_x = 200.0
+	_update_visual_position()
 	
 	reset_block()
 	clear_all_status_effects()
