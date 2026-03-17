@@ -621,11 +621,15 @@ func _on_combat_ended_camera():
 
 # 移动战斗单位
 func move_combatant(combatant: BaseCombatant, new_x: float) -> void:
+	if combatant == null:
+		return
 	combatant.set_position_x(new_x)
 	Signals.combatant_moved.emit(combatant)
 
 # 玩家移动到指定位置
 func move_player_to(x: float) -> void:
+	if player == null:
+		return
 	move_combatant(player, x)
 
 #endregion
