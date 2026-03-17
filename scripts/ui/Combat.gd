@@ -503,7 +503,7 @@ func _input(event: InputEvent):
 	
 	# 移动端双指缩放
 	if event is InputEventScreenDrag:
-		if event.pointer_index == 1:
+		if event.index == 1:
 			if not is_pinching:
 				is_pinching = true
 				last_pinch_distance = event.position.distance_to(event.global_position)
