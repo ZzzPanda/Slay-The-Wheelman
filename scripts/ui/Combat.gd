@@ -39,6 +39,10 @@ const MIN_ZOOM: float = 0.5
 const MAX_ZOOM: float = 2.0
 const ZOOM_SPEED: float = 0.1
 
+# 移动端双指缩放
+var last_pinch_distance: float = 0.0
+var is_pinching: bool = false
+
 func _ready():
 	Signals.player_money_changed.connect(_on_player_money_changed)
 	Signals.player_health_changed.connect(_on_player_health_changed)
@@ -471,7 +475,7 @@ func _input(event: InputEvent):
 	if not visible:
 		return
 	
-	# 滚轮缩放
+	# 鼠标滚轮缩放
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_camera_zoom(-ZOOM_SPEED)
@@ -483,9 +487,34 @@ func _input(event: InputEvent):
 			else:
 				_camera_end_drag()
 	
-	# 拖动
+	# 鼠标拖动
 	if event is InputEventMouseMotion and is_dragging:
 		_camera_pan(event.relative)
+	
+	# 移动端触摸处理
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			if not is_pinching:
+				_camera_start_drag(event.position)
+		else:
+			if not is_pinching:
+				_camera_end_drag()
+			is_pinching = false
+	
+	# 移动端双指缩放
+	if event is InputEventScreenDrag:
+		if event.pointer_index == 1:
+			if not is_pinching:
+				is_pinching = true
+				last_pinch_distance = event.position.distance_to(event.global_position)
+			else:
+				var current_distance = event.position.distance_to(event.global_position)
+				var delta = (current_distance - last_pinch_distance) * 0.01
+				_camera_zoom(delta)
+				last_pinch_distance = current_distance
+	
+	if event is InputEventMagnifyGesture:
+		_camera_zoom(event.scale * ZOOM_SPEED * 2)
 
 func _camera_start_drag(mouse_pos: Vector2) -> void:
 	is_dragging = true
@@ -577,6 +606,7 @@ func _on_combat_ended_camera():
 	# 战斗结束重置
 	camera_zoom = 1.0
 	camera_offset = Vector2.ZERO
+	is_pinching = false
 
 # 移动战斗单位
 func move_combatant(combatant: BaseCombatant, new_x: float) -> void:
@@ -590,114 +620,3 @@ func move_player_to(x: float) -> void:
 #endregion
 
 #region 镜头控制
-
-func _input(event: InputEvent):
-	# 只在战斗中启用镜头控制
-	if not visible:
-		return
-	
-	# 滚轮缩放
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_camera_zoom(-ZOOM_SPEED)
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_camera_zoom(ZOOM_SPEED)
-		elif event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				_camera_start_drag(event.position)
-			else:
-				_camera_end_drag()
-	
-	# 拖动
-	if event is InputEventMouseMotion and is_dragging:
-		_camera_pan(event.relative)
-
-func _camera_start_drag(mouse_pos: Vector2) -> void:
-	is_dragging = true
-	drag_start = mouse_pos + camera_offset
-
-func _camera_end_drag() -> void:
-	is_dragging = false
-
-func _camera_pan(delta: Vector2) -> void:
-	camera_offset = drag_start - delta
-	
-	# 限制范围
-	var viewport_size = get_viewport_rect().size * camera_zoom
-	var max_offset = viewport_size / 2
-	camera_offset = camera_offset.clamp(-max_offset, max_offset)
-	
-	_apply_camera_transform()
-
-func _camera_zoom(delta: float) -> void:
-	camera_zoom = clampf(camera_zoom + delta, MIN_ZOOM, MAX_ZOOM)
-	_apply_camera_transform()
-
-func _apply_camera_transform() -> void:
-	# 应用到战斗区域的所有子节点
-	if has_node("Player"):
-		var p = $Player
-		if not p.has_meta("_original_position"):
-			p.set_meta("_original_position", p.position)
-		else:
-			p.position = p.get_meta("_original_position")
-		p.position += camera_offset
-		p.scale = Vector2(camera_zoom, camera_zoom)
-	
-	if has_node("EnemyContainer"):
-		var e = $EnemyContainer
-		if not e.has_meta("_original_position"):
-			e.set_meta("_original_position", e.position)
-		else:
-			e.position = e.get_meta("_original_position")
-		e.position += camera_offset
-		e.scale = Vector2(camera_zoom, camera_zoom)
-
-func _on_combat_started_camera(_event_id: String):
-	# 战斗开始时自动适应视角
-	_camera_fit_all_combatants()
-
-func _camera_fit_all_combatants() -> void:
-	var p = Global.get_player()
-	if p == null:
-		return
-	
-	var min_x: float = p.position_x
-	var max_x: float = p.position_x
-	
-	# 获取所有敌人位置
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		if enemy is BaseCombatant:
-			min_x = minf(min_x, enemy.position_x)
-			max_x = maxf(max_x, enemy.position_x)
-	
-	# 计算范围
-	var combat_range = max_x - min_x
-	if combat_range <= 0:
-		combat_range = 200
-	
-	# 计算缩放
-	var viewport_width = get_viewport_rect().size.x
-	camera_zoom = clampf(viewport_width / (combat_range + 300), MIN_ZOOM, MAX_ZOOM)
-	
-	# 计算居中偏移
-	var center_x = (min_x + max_x) / 2
-	camera_offset = Vector2(viewport_width / 2 - center_x * camera_zoom, 0)
-	
-	_apply_camera_transform()
-
-func _on_combat_ended_camera():
-	# 战斗结束重置
-	camera_zoom = 1.0
-	camera_offset = Vector2.ZERO
-
-# 移动战斗单位
-func move_combatant(combatant: BaseCombatant, new_x: float) -> void:
-	combatant.set_position_x(new_x)
-	Signals.combatant_moved.emit(combatant)
-
-# 玩家移动到指定位置
-func move_player_to(x: float) -> void:
-	move_combatant(player, x)
-
-#endregion
