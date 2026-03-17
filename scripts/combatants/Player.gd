@@ -131,6 +131,8 @@ func _on_run_started():
 	# sprite.texture = load(character_data.character_texture_path)
 	sprite.texture = load(character_data.character_texture_path)
 
+	# 初始化位置 (玩家在左侧)
+	position_x = 200.0
 	
 	reset_block()
 	clear_all_status_effects()

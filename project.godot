@@ -36,6 +36,7 @@ ActionHandler="*res://autoload/ActionHandler.gd"
 ActionGenerator="*res://autoload/ActionGenerator.gd"
 DebugLogger="*res://autoload/DebugLogger.gd"
 UIDGenerator="*res://autoload/UIDGenerator.gd"
+Translation="*res://autoload/Translation.gd"
 
 [debug]
 

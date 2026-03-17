@@ -58,6 +58,9 @@ func spawn_enemy(enemy_object_id: String, container: Control = automatic_enemy_c
 	container.add_child(enemy)
 	enemy.init(enemy_data)
 	
+	# 设置默认位置 (右侧)
+	enemy.position_x = 600.0 + randf() * 200
+	
 	return enemy
 
 func spawn_enemy_at_slot(enemy_object_id: String, slot_id: int) -> Enemy:
@@ -70,8 +73,11 @@ func spawn_enemy_at_slot(enemy_object_id: String, slot_id: int) -> Enemy:
 		var pos: Array = event_data.event_enemy_placement_positions[slot_id]
 		var enemy_position: Vector2 = Vector2(pos[0], pos[1])
 		enemy.position = enemy_position
+		# 根据X坐标设置position_x
+		enemy.position_x = pos[0]
 	else:
 		push_error("Spawn slot at index ", slot_id, " undefined in event ", event_data.object_id)
+		enemy.position_x = 600.0 + slot_id * 100
 	
 	return enemy
 

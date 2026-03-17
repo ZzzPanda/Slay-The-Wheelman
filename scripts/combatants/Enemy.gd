@@ -25,7 +25,7 @@ func init(_enemy_data: EnemyData):
 		var charge_amount: int = enemy_data.enemy_initial_status_effects[status_effect_object_id]
 		add_status_effect_charges(status_effect_object_id, charge_amount)
 	
-	name_label.text = enemy_data.enemy_name
+	name_label.text = enemy_data.get_enemy_name()
 	
 	# update_health_bar()
 	layered_health_bar.init(enemy_data.enemy_health, enemy_data.enemy_health_max)

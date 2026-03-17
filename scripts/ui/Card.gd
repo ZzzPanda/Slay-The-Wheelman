@@ -80,7 +80,20 @@ func update_card_display(selected_enemy: Enemy = null) -> void:
 	# updates the card's display
 	card_name.set_bbcode("[center]" + card_data.get_card_name() + "[/center]")
 	card_description.set_bbcode(get_card_description(selected_enemy))
-	card_type.text = CardData.CARD_RARITIES.keys()[card_data.card_rarity] + " " + CardData.CARD_TYPES.keys()[card_data.card_type]
+	
+	# Get translated rarity and type
+	var rarity_key: String = CardData.CARD_RARITIES.keys()[card_data.card_rarity]
+	var type_key: String = CardData.CARD_TYPES.keys()[card_data.card_type]
+	var rarity_translated: String = rarity_key
+	var type_translated: String = type_key
+	
+	# Try translation if Translation autoload is ready
+	var translation_node = get_tree().root.get_node_or_null("Translation")
+	if translation_node:
+		rarity_translated = translation_node.t(rarity_key)
+		type_translated = translation_node.t(type_key)
+	
+	card_type.text = rarity_translated + " " + type_translated
 	
 	var color_data: ColorData = Global.get_color_data(card_data.card_color_id)
 	if color_data != null:

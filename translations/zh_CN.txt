@@ -1,0 +1,118 @@
+# English to Chinese Translation CSV
+# Format: key,translation
+# Add your translations below
+
+# Card Types
+ATTACK,攻击
+SKILL,技能
+POWER,力量
+STATUS,状态
+CURSE,诅咒
+
+# Card Rarities
+BASIC,基础
+COMMON,普通
+UNCOMMON,稀有
+RARE,传奇
+GENERATED,生成
+
+# Card Names
+Basic Attack,打击
+RNG Attack,随机攻击
+Corrosion,腐蚀
+Bomb,炸弹
+Duplicate Plays,双重施放
+Duplicate Atttacks,双重攻击
+Damage Increase,伤害提升
+Flat Damage Attack,固定伤害攻击
+Weaken Enemies,削弱敌人
+Vulnerable Enemies,易伤敌人
+Preserve Block,保留护盾
+Attack and Block,攻击与防御
+Basic Block,防御
+Draw,抽牌
+Reshuffle and Draw,重洗并抽牌
+Add Consumable,添加消耗品
+Big Attack,重击
+Healing Attack,治疗攻击
+Improving Attack,强化攻击
+Retain Block,保留防御
+Self Attaching Attack,自身附着攻击
+Attack With Draw,攻击抽牌
+Block on Attack,攻击防御
+Variable Attack,可变攻击
+Cards Played Attack,打牌攻击
+Block,护盾
+Custom Block,自定义防御
+End Turn,结束回合
+Exhaust Block,耗尽防御
+Improving Block,强化防御
+Law,法则
+Discard Block,弃牌防御
+Banish Attack,驱散攻击
+Special Discard,特殊弃牌
+Pick From Discard,弃牌选取
+Set Hand Energy,设置手牌能量
+Transform Hand,转换手牌
+Mode A,模式A
+Mode B,模式B
+Randomize Card Cost,随机化能量消耗
+Shove Dance,推挤舞蹈
+Shove,推挤
+Energy Card,能量卡
+Discard Hand Card,弃手牌卡
+Cycle Intent,转换意图
+Block Without Attacks,无攻击防御
+Lowering Energy Attack,降低能量攻击
+Increasing Energy Attack,增加能量攻击
+Block If Exhaust,耗尽防御
+Attack in Center,中心攻击
+Attack with Adjacency,邻近攻击
+Play From Discard,弃牌打出
+Discard Attacks From Draw,抽牌弃攻击
+Play Random Hand,随机打牌
+Retain Cards,保留手牌
+Upgrade Cards,升级卡牌
+Upgrade Combat Deck,升级战斗牌组
+Draft Attack Card,起草攻击卡
+Draft Red Card,起草红卡
+Draft Random Card,起草随机卡
+Energy Card,能量卡
+Energy Draw Card,能量抽牌
+Add Health,添加生命
+Restart Combat,重新开始战斗
+Log to Console,输出到控制台
+
+# Artifact Names
+Artifact Add Money,金币
+Artifact Block on Attacks,攻击护盾
+Artifact Blue Boss,蓝 Boss
+Artifact Blue Shop,蓝商店
+Artifact Draw on Combat,战斗抽牌
+Artifact Draw on Kill,击杀抽牌
+Artifact Easy Mode,简单模式
+Artifact Full Heal,完全治疗
+Artifact Green Boss,绿 Boss
+Artifact Green Shop,绿商店
+Artifact Heal On Combat End,战斗结束治疗
+Artifact Increase Attack on Rest,休息攻击提升
+Artifact Make Attack Card Innate,攻击卡固有
+Artifact Orange Boss,橙 Boss
+Artifact Orange Shop,橙商店
+Artifact Red Boss,红 Boss
+Artifact Red Shop,红商店
+Artifact Reshuffle,重洗
+Artifact Retain Hand,保留手牌
+Artifact See Draw Pile,查看抽牌堆
+Artifact White Boss,白 Boss
+Artifact White Shop,白商店
+
+# Enemy Names
+Red Enemy,红色敌人
+Blue Enemy,蓝色敌人
+Green Enemy,绿色敌人
+Big Attack Enemy,重击敌人
+Act 1 Boss,第一幕Boss
+Act 1 Miniboss,第一幕小Boss
+Minion 1,随从1
+Minion 2,随从2

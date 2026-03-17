@@ -2,6 +2,26 @@
 extends Control
 class_name BaseCombatant
 
+# 位置系统
+var position_x: float = 0.0  # 一维坐标 (0-1000)
+
+## 设置战斗单位位置 (一维坐标)
+func set_position_x(x: float) -> void:
+	position_x = clamp(x, 0.0, 1000.0)
+	_update_visual_position()
+
+## 更新视觉位置
+func _update_visual_position() -> void:
+	# 将一维坐标转换为屏幕X坐标
+	# 假设战斗区域宽度为1000单位
+	var combat_width: float = 1000.0
+	var screen_x: float = (position_x / combat_width) * get_viewport_rect().size.x
+	position.x = screen_x - (position.x + size.x / 2)  # 保持相对位置
+
+## 获取战斗单位位置
+func get_position_x() -> float:
+	return position_x
+
 @onready var block: Sprite2D = $Visible/Block
 @onready var block_amount: Label = $Visible/Block/BlockAmount
 
