@@ -72,6 +72,14 @@ const ACTION_SHOP_POPULATE_ITEMS: String = "res://scripts/actions/shop_actions/A
 # enemy actions
 const ACTION_CYCLE_ENEMY_INTENT: String = "res://scripts/actions/enemy_actions/ActionCycleEnemyIntent.gd"
 
+# position actions
+const ACTION_CHECK_DISTANCE: String = "res://scripts/actions/position_actions/ActionCheckDistance.gd"
+const ACTION_MOVE_POSITION: String = "res://scripts/actions/position_actions/ActionMovePosition.gd"
+
+# combat actions (knockback, recoil)
+const ACTION_KNOCKBACK: String = "res://scripts/actions/combat_actions/ActionKnockback.gd"
+const ACTION_RECOIL: String = "res://scripts/actions/combat_actions/ActionRecoil.gd"
+
 # artifact actions
 const ACTION_INCREASE_ARTIFACT_CHARGE: String = "res://scripts/actions/artifact_actions/ActionIncreaseArtifactCharge.gd"
 

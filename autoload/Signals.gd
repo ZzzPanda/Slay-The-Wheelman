@@ -123,6 +123,8 @@ signal combatant_block_broken(base_combatant: BaseCombatant)	# the combatant has
 signal combatant_blocked(base_combatant: BaseCombatant, damage_blocked: int)	# combatant fully blocked an attack
 signal combatant_damaged(base_combatant: BaseCombatant, unblocked_damage: int)	# a combatant has taken health damage. Cannot be 0
 signal combatant_moved(base_combatant: BaseCombatant)	# a combatant has moved positions
+signal combatant_knockback_started(base_combatant: BaseCombatant, knockback_force: float, direction: float)	# a combatant started knockback
+signal player_recoil_started(player: Player, recoil_force: float, direction: float)	# player started recoil from attack
 
 signal energy_added(energy_amount: int)	# when the player gains energy not at start of turn
 
