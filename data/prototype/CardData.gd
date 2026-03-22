@@ -105,6 +105,11 @@ const STANDARD_CARD_RARITIES: Array[int] = [CARD_RARITIES.COMMON, CARD_RARITIES.
 @export var card_unremovable_from_deck: bool = false	# if the card cannot be removed from the permanent deck. Does nothing by itself, this should be enforced through validators
 @export var card_untransformable_from_deck: bool = false	# if the card cannot be transformed from the permanent deck. Does nothing by itself, this should be enforced through validators
 
+### Weapon System
+@export var card_weapon_object_id: String = ""   # 关联的武器 ID (指向 WeaponData)
+@export var card_weapon_min_range: float = -1.0   # 自定义最小攻击范围（-1 表示使用武器默认值，0 是合法值）
+@export var card_weapon_max_range: float = -1.0  # 自定义最大攻击范围（-1 表示使用武器默认值，0 是合法值）
+
 func _to_string():
 	return get_card_name()
 
@@ -242,3 +247,55 @@ func add_card_tag(card_tag: String) -> void:
 		card_tags.append(card_tag)
 func remove_card_tag(card_tag: String) -> void:
 	card_tags.erase(card_tag)
+
+## 武器系统方法
+
+## 检查卡牌是否有关联的武器
+func has_weapon() -> bool:
+	return card_weapon_object_id != ""
+
+## 获取武器数据 (通过 Global 获取)
+func get_weapon_data():
+	if card_weapon_object_id == "":
+		return null
+	if Global.has_method("get_weapon_data"):
+		return Global.get_weapon_data(card_weapon_object_id)
+	return null
+
+## 获取武器攻击范围 {"min": float, "max": float}
+## 注意: card_weapon_max_range = -1 表示使用武器默认值，0 是合法的自定义值
+func get_weapon_range() -> Dictionary:
+	var weapon = get_weapon_data()
+	if weapon == null:
+		return {}
+	
+	# card_weapon_max_range = -1 表示使用武器默认值；>= 0 表示使用自定义值
+	var min_range = card_weapon_min_range if card_weapon_min_range != -1 else weapon.attack_range_min
+	var max_range = card_weapon_max_range if card_weapon_max_range != -1 else weapon.attack_range_max
+	
+	return {"min": min_range, "max": max_range}
+
+## 检查目标是否在武器攻击范围内
+func is_target_in_weapon_range(source_x: float, target_x: float) -> bool:
+	var weapon_range = get_weapon_range()
+	if weapon_range.is_empty():
+		return true  # 没有武器时默认可以攻击
+	
+	var distance = abs(target_x - source_x)
+	return distance >= weapon_range["min"] and distance <= weapon_range["max"]
+
+## 获取武器类型名称
+func get_weapon_type_name() -> String:
+	var weapon = get_weapon_data()
+	if weapon == null:
+		return ""
+	
+	match weapon.weapon_type:
+		0:  # MELEE
+			return "近战"
+		1:  # RANGED
+			return "远程"
+		2:  # THROW
+			return "投掷"
+		_:
+			return ""
