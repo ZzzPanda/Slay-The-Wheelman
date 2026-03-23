@@ -38,6 +38,7 @@ extends Node
 	["EnemyData", EnemyData,"_id_to_enemy_data", ["enemies/"]],
 	["CardData", CardData, "_id_to_card_data", ["cards/"]],
 	["ArtifactData", ArtifactData, "_id_to_artifact_data", ["artifacts/"]],
+	["WeaponData", WeaponData, "_id_to_weapon_data", ["weapons/"]],
 	["PlayerData", PlayerData, "_id_to_player_data", ["player/"]],
 ]
 
@@ -77,6 +78,7 @@ var _id_to_custom_signal_data: Dictionary[String, CustomSignalData] = {}
 var _id_to_enemy_data: Dictionary[String, EnemyData] = {}
 var _id_to_card_data: Dictionary[String, CardData] = {}
 var _id_to_artifact_data: Dictionary[String, ArtifactData] = {}
+var _id_to_weapon_data: Dictionary[String, WeaponData] = {}
 var _id_to_player_data: Dictionary[String, PlayerData] = {}
 
 # mutable data; These objects are modifiable
@@ -609,6 +611,21 @@ func get_artifact_data_from_prototype(artifact_id: String) -> ArtifactData:
 	# generates a copy of a given ArtifactData
 	var artifact_data: ArtifactData = get_artifact_data(artifact_id)
 	return artifact_data.get_prototype(true)
+#endregion
+
+#region Weapons (位置战斗系统)
+func get_weapon_data(weapon_id: String) -> WeaponData:
+	return _id_to_weapon_data.get(weapon_id, null)
+
+func get_all_weapons() -> Array[WeaponData]:
+	var all_weapons: Array[WeaponData] = []
+	all_weapons.assign(_id_to_weapon_data.values())
+	return all_weapons
+
+func get_weapon_data_from_prototype(weapon_id: String) -> WeaponData:
+	# generates a copy of a given WeaponData
+	var weapon_data: WeaponData = get_weapon_data(weapon_id)
+	return weapon_data.get_prototype(true)
 #endregion
 
 #region Consumables

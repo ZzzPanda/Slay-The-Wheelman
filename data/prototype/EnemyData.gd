@@ -64,6 +64,13 @@ const ENEMY_ATTACK_DELAY: float = 0.5
 ### Statuses
 @export var enemy_initial_status_effects: Dictionary[String, int] = {}	# maps status effect ids to charge count at start of combat
 
+### Weapon Support (位置战斗系统)
+@export var enemy_weapon_id: String = ""           # 武器ID
+@export var enemy_attack_range_min: float = 0.0     # 最小攻击距离
+@export var enemy_attack_range_max: float = 1000.0  # 最大攻击距离
+@export var enemy_knockback_force: float = 30.0     # 击退力度
+@export var enemy_recoil_force: float = 20.0         # 后坐力
+
 #region Difficulty
 @export var enemy_difficulty_to_enemy_modfiers: Dictionary[String, Dictionary] = {
 	#"2": {
@@ -153,3 +160,24 @@ func get_current_attack_custom_actions() -> Array[Dictionary]:
 	var attack_actions: Array[Dictionary] = []
 	attack_actions.assign(current_attack_state.get("custom_actions", []))
 	return attack_actions
+
+### Weapon Support Methods
+func has_weapon() -> bool:
+	return enemy_weapon_id != ""
+
+func get_attack_range() -> Dictionary:
+	return {
+		"min": enemy_attack_range_min,
+		"max": enemy_attack_range_max
+	}
+
+func is_target_in_attack_range(target_position_x: float, enemy_position_x: float) -> bool:
+	var range_dict = get_attack_range()
+	var distance = abs(target_position_x - enemy_position_x)
+	return distance >= range_dict["min"] and distance <= range_dict["max"]
+
+func get_knockback_force() -> float:
+	return enemy_knockback_force
+
+func get_recoil_force() -> float:
+	return enemy_recoil_force

@@ -8,6 +8,13 @@ class_name Player
 const INTENT_UPDATES_LAZILY: bool = true	# batches intent updates
 var _intent_is_updating: bool = false
 
+## Override set_position_x to sync with PlayerData
+func set_position_x(x: float) -> void:
+	super(x)
+	# 同步到 PlayerData
+	if Global.has("player_data"):
+		Global.player_data.player_position_x = position_x
+
 func _ready():
 	super()
 	Signals.enemy_intent_changed.connect(_on_enemy_intent_changed)
@@ -133,6 +140,8 @@ func _on_run_started():
 
 	# 初始化位置 (玩家在左侧)
 	position_x = 200.0
+	# 同步到 PlayerData
+	Global.player_data.player_position_x = position_x
 	_update_visual_position()
 	
 	reset_block()

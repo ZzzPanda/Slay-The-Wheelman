@@ -51,7 +51,7 @@ else
     echo "  Run: $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager platforms;android-34"
 fi
 
-if [ - -d "$ANDROID_SDK_ROOT/build-tools/34.0.0" ]; then
+if [ -d "$ANDROID_SDK_ROOT/build-tools/34.0.0" ]; then
     echo "✓ Build Tools 34.0.0"
 else
     echo "✗ Build Tools 34.0.0 not found"

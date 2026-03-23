@@ -91,6 +91,13 @@ const STANDARD_CARD_RARITIES: Array[int] = [CARD_RARITIES.COMMON, CARD_RARITIES.
 	#"tag_<something>"
 ]
 
+### Weapon Support (位置战斗系统)
+@export var card_weapon_id: String = ""           # 武器ID (关联 WeaponData)
+@export var card_weapon_range_min: float = 0.0    # 最小攻击距离 (覆盖武器默认值)
+@export var card_weapon_range_max: float = 1000.0 # 最大攻击距离 (覆盖武器默认值)
+@export var card_weapon_knockback: float = 0.0    # 击退力度 (覆盖武器默认值)
+@export var card_weapon_recoil: float = 0.0       # 后坐力 (覆盖武器默认值)
+
 ### Upgrades
 @export var card_upgrade_amount: int = 0	# number of times the card has been upgraded
 @export var card_upgrade_amount_max: int = 1	# max number of times the card can be upgraded
@@ -242,3 +249,25 @@ func add_card_tag(card_tag: String) -> void:
 		card_tags.append(card_tag)
 func remove_card_tag(card_tag: String) -> void:
 	card_tags.erase(card_tag)
+
+### Weapon Support Methods
+func has_weapon() -> bool:
+	return card_weapon_id != ""
+
+func get_weapon_range() -> Dictionary:
+	# 返回卡牌的武器攻击范围 (优先使用卡牌覆盖值)
+	return {
+		"min": card_weapon_range_min if card_weapon_range_min > 0 else 0.0,
+		"max": card_weapon_range_max
+	}
+
+func get_knockback_force() -> float:
+	return card_weapon_knockback
+
+func get_recoil_force() -> float:
+	return card_weapon_recoil
+
+func is_target_in_weapon_range(target_position_x: float, attacker_position_x: float) -> bool:
+	var range_dict = get_weapon_range()
+	var distance = abs(target_position_x - attacker_position_x)
+	return distance >= range_dict["min"] and distance <= range_dict["max"]

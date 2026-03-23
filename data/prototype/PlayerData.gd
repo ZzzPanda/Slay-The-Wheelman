@@ -15,6 +15,8 @@ var player_energy: int = 10 # in combat energy. Not saved.
 
 var player_block: int = 0 # in combat block. Not saved.
 
+var player_position_x: float = 500.0 # player position in combat (0-1000). Not saved.
+
 ## A json friendly dictionary containing values that can be embedded onto the player
 ## for extensibility, custom UI, and general mod support purposes.
 ## These values appear last in the action value hierarchy.
