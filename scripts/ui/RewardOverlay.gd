@@ -99,6 +99,27 @@ func populate_reward_display() -> void:
 			reward_container.add_child(artifact_reward_button)
 			# make reward group mutually exclusive
 			artifact_reward_button.button_up.connect(_on_reward_group_selected.bind(reward_group))
+		
+		# consumable rewards
+		var consumable_reward_ids: Array[String] = []
+		consumable_reward_ids.assign(reward_group_data.get("reward_consumable_ids", []))
+		
+		for consumable_id in consumable_reward_ids:
+			var add_consumable_action_data: Array[Dictionary] = [
+				{
+				Scripts.ACTION_ADD_CONSUMABLE: {
+					"consumable_object_id": consumable_id
+					}
+				}
+			]
+			
+			var add_consumable_action: BaseAction = ActionGenerator.create_actions(null, null, [], add_consumable_action_data, null)[0]
+			
+			var consumable_reward_button: BaseRewardButton = Scenes.ARTIFACT_REWARD_BUTTON.instantiate()
+			consumable_reward_button.init(add_consumable_action, reward_group)
+			reward_container.add_child(consumable_reward_button)
+			# make reward group mutually exclusive
+			consumable_reward_button.button_up.connect(_on_reward_group_selected.bind(reward_group))
 	
 	# clear reward data
 	clear_rewards()
@@ -125,12 +146,13 @@ func add_location_rewards() -> void:
 		"money_amount": Random.get_location_money_reward(),
 		"card_drafts": Random.get_location_card_rewards(),
 		"artifact_ids": Random.get_location_artifact_rewards(),
+		"consumable_ids": Random.get_location_consumable_rewards(),
 		}
 	}]
 	var grant_reward_action: BaseAction = ActionGenerator.create_actions(player, null, [player], action_data, null)[0]
 	grant_reward_action.perform_action()
 
-func add_rewards(reward_group: int, money_amount: int, card_drafts: Array[Array], artifact_ids: Array[String], custom_action_data: Array[Array]):
+func add_rewards(reward_group: int, money_amount: int, card_drafts: Array[Array], artifact_ids: Array[String], consumable_ids: Array[String], custom_action_data: Array[Array]):
 	# adds rewards which can be populated into the display
 	
 	# get existing reward data generate new reward data
@@ -142,6 +164,7 @@ func add_rewards(reward_group: int, money_amount: int, card_drafts: Array[Array]
 			"reward_money": 0,
 			"reward_card_drafts": [],
 			"reward_artifact_ids": [],
+			"reward_consumable_ids": [],
 			"reward_custom_action_data": [],
 			}
 	
@@ -157,6 +180,11 @@ func add_rewards(reward_group: int, money_amount: int, card_drafts: Array[Array]
 	var reward_artifact_ids: Array = reward_group_data["reward_artifact_ids"]
 	reward_artifact_ids.assign(artifact_ids)
 	reward_group_data["reward_artifact_ids"] = reward_artifact_ids
+
+	# consumables
+	var reward_consumable_ids: Array = reward_group_data["reward_consumable_ids"]
+	reward_consumable_ids.assign(consumable_ids)
+	reward_group_data["reward_consumable_ids"] = reward_consumable_ids
 
 	# custom actions
 	var reward_custom_action_data: Array = reward_group_data["reward_custom_action_data"]
@@ -179,8 +207,8 @@ func clear_rewards(reward_group: int = -1) -> void:
 	else:
 		reward_data.erase(reward_group)	# clear a specific reward group
 
-func _on_reward_grant_requested(reward_group: int, money_amount: int, card_drafts: Array[Array], artifact_ids: Array[String], custom_action_data: Array[Array]):
-	add_rewards(reward_group, money_amount, card_drafts, artifact_ids, custom_action_data)
+func _on_reward_grant_requested(reward_group: int, money_amount: int, card_drafts: Array[Array], artifact_ids: Array[String], consumable_ids: Array[String], custom_action_data: Array[Array]):
+	add_rewards(reward_group, money_amount, card_drafts, artifact_ids, consumable_ids, custom_action_data)
 
 func _on_reward_clear_requested(reward_group: int):
 	clear_rewards(reward_group)
