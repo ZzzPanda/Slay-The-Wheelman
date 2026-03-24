@@ -289,6 +289,71 @@ func get_location_artifact_rewards(location_data: LocationData = Global.get_play
 	
 	return returned_artifact_ids
 
+## Consumable rarity weights for chest rewards
+const CONSUMABLE_CHEST_RARITY_WEIGHTS: Dictionary[Variant, int] = {
+	ConsumableData.CONSUMABLE_RARITIES.COMMON: 60,
+	ConsumableData.CONSUMABLE_RARITIES.UNCOMMON: 30,
+	ConsumableData.CONSUMABLE_RARITIES.RARE: 10,
+}
+
+## Consumable rarity weights for miniboss rewards
+const CONSUMABLE_MINIBOSS_RARITY_WEIGHTS: Dictionary[Variant, int] = {
+	ConsumableData.CONSUMABLE_RARITIES.COMMON: 30,
+	ConsumableData.CONSUMABLE_RARITIES.UNCOMMON: 50,
+	ConsumableData.CONSUMABLE_RARITIES.RARE: 20,
+}
+
+## Consumable rarity weights for boss rewards
+const CONSUMABLE_BOSS_RARITY_WEIGHTS: Dictionary[Variant, int] = {
+	ConsumableData.CONSUMABLE_RARITIES.COMMON: 20,
+	ConsumableData.CONSUMABLE_RARITIES.UNCOMMON: 30,
+	ConsumableData.CONSUMABLE_RARITIES.RARE: 50,
+}
+
+## Generates consumable rewards for a location (treasure chest, miniboss, boss)
+func get_location_consumable_rewards(location_data: LocationData = Global.get_player_location_data(), consumable_count: int = 1) -> Array[String]:
+	var location_type: int = location_data.location_type
+	var returned_consumable_ids: Array[String] = []
+	var rng_consumable_rewards: RandomNumberGenerator = Global.player_data.get_player_rng("rng_consumable_rewards")
+	match location_type:
+		LocationData.LOCATION_TYPES.TREASURE:
+			var weights: Dictionary[Variant, int] = CONSUMABLE_CHEST_RARITY_WEIGHTS
+			for _i: int in consumable_count:
+				var random_consumable_rarity: int = Random.get_weighted_selection(rng_consumable_rewards, weights)
+				var consumable_id: String = _get_random_consumable_by_rarity(rng_consumable_rewards, random_consumable_rarity)
+				if consumable_id != "":
+					returned_consumable_ids.append(consumable_id)
+		LocationData.LOCATION_TYPES.MINIBOSS:
+			var weights: Dictionary[Variant, int] = CONSUMABLE_MINIBOSS_RARITY_WEIGHTS
+			for _i: int in consumable_count:
+				var random_consumable_rarity: int = Random.get_weighted_selection(rng_consumable_rewards, weights)
+				var consumable_id: String = _get_random_consumable_by_rarity(rng_consumable_rewards, random_consumable_rarity)
+				if consumable_id != "":
+					returned_consumable_ids.append(consumable_id)
+		LocationData.LOCATION_TYPES.BOSS:
+			var weights: Dictionary[Variant, int] = CONSUMABLE_BOSS_RARITY_WEIGHTS
+			for _i: int in consumable_count:
+				var random_consumable_rarity: int = Random.get_weighted_selection(rng_consumable_rewards, weights)
+				var consumable_id: String = _get_random_consumable_by_rarity(rng_consumable_rewards, random_consumable_rarity)
+				if consumable_id != "":
+					returned_consumable_ids.append(consumable_id)
+	
+	return returned_consumable_ids
+
+## Helper function to get a random consumable by rarity
+func _get_random_consumable_by_rarity(rng: RandomNumberGenerator, rarity: int) -> String:
+	var consumable_ids: Array[String] = []
+	for consumable_id: String in Global._id_to_consumable_data.keys():
+		var consumable_data: ConsumableData = Global.get_consumable_data(consumable_id)
+		if consumable_data != null and consumable_data.consumable_rarity == rarity:
+			consumable_ids.append(consumable_id)
+	
+	if len(consumable_ids) == 0:
+		return ""
+	
+	shuffle_array(rng, consumable_ids)
+	return consumable_ids[0]
+
 ### Shops
 
 ## Generates initial prices for given cards in a shop. This will be used in parallel to the cards.
