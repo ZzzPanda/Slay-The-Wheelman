@@ -2,7 +2,6 @@
 extends BaseRunModifier
 
 func run_start_modification() -> void:
-	print("All color cards draftable")
 	
 	# add custom actions
 	var action_data: Array[Dictionary] = [
