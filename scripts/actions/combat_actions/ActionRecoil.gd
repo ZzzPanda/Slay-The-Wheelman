@@ -24,14 +24,11 @@ func _execute_action(_targets: Array[BaseCombatant], _player: Player) -> void:
 	
 	# 应用后坐力到玩家
 	if _player != null:
-		var current_x = _player.position_x
-		var new_x = current_x + (recoil_force * recoil_direction)
+		# 使用 PositionSystem 计算后坐力目标位置
+		var new_x = PositionSystem.calculate_recoil_target(_player, attack_direction, recoil_force)
 		
-		# 限制在战斗区域内
-		new_x = clamp(new_x, 50.0, 950.0)
-		
-		# 使用平滑移动动画
-		_move_to_position(_player, new_x, duration)
+		# 使用 PositionSystem 平滑移动
+		PositionSystem.move_combatant(_player, new_x, duration)
 		
 		# 发出后坐力信号
 		Signals.player_recoil_started.emit(_player, recoil_force, recoil_direction)
@@ -41,13 +38,6 @@ func _execute_action(_targets: Array[BaseCombatant], _player: Player) -> void:
 	else:
 		# 如果没有玩家，直接 finish
 		_finish_action()
-
-## 平滑移动到目标位置
-func _move_to_position(target: BaseCombatant, target_x: float, duration: float) -> void:
-	# 创建补间动画实现平滑移动
-	var tween = create_tween()
-	tween.tween_property(target, "position_x", target_x, duration).set_trans(Tween.TRANS_SINE)
-	# 注意：不要在这里调用 _finish_action()，因为 tween 是异步的
 
 ## 静态方法：创建后坐力动作
 static func create_recoil_action(

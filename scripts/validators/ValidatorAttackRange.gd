@@ -43,8 +43,8 @@ func _validation(_card_data: CardData, action: BaseAction, values: Dictionary[St
 				actual_min_range = weapon_range.get("min", min_range)
 				actual_max_range = weapon_range.get("max", max_range)
 	
-	# 计算距离
-	var distance = abs(attacker.position_x - target.position_x)
+	# 计算距离（使用 PositionSystem）
+	var distance = PositionSystem.get_combatant_distance(attacker, target)
 	
 	# 验证距离是否在范围内
 	return distance >= actual_min_range and distance <= actual_max_range
