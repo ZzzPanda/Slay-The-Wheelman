@@ -548,19 +548,59 @@ func _camera_zoom(delta: float) -> void:
 	_apply_camera_transform()
 
 func _apply_camera_transform() -> void:
-	# 应用到战斗区域的所有子节点
-	var combat_nodes = _get_combat_nodes()
-	for node in combat_nodes:
-		if node is Control:
-			# 恢复原始位置
-			if not node.has_meta("_original_position"):
-				node.set_meta("_original_position", node.position)
-			else:
-				node.position = node.get_meta("_original_position")
-			# 应用偏移
-			node.position += camera_offset
-			# 应用缩放
-			node.scale = Vector2(camera_zoom, camera_zoom)
+	# 应用镜头偏移和缩放到所有战斗单位
+	# 玩家和敌人用 BaseCombatant._base_screen_x 作为基准
+	# 容器节点 (EnemyContainer, Hand) 用 meta "_original_position" 作为基准
+	
+	# 处理玩家
+	if has_node("Player") and $Player.has_meta("_base_screen_x"):
+		var base_x = $Player.get_meta("_base_screen_x")
+		$Player.position.x = base_x + camera_offset.x
+		$Player.scale = Vector2(camera_zoom, camera_zoom)
+	
+	# 处理敌人容器 - 每个敌人子节点单独处理
+	if has_node("EnemyContainer"):
+		var ec = $EnemyContainer
+		ec.scale = Vector2(camera_zoom, camera_zoom)
+		for child in ec.get_children():
+			if child is BaseCombatant and child.has_meta("_base_screen_x"):
+				var base_x = child.get_meta("_base_screen_x")
+				child.position.x = base_x + camera_offset.x
+				child.scale = Vector2(camera_zoom, camera_zoom)
+	
+	# 处理手牌容器
+	if has_node("Hand"):
+		var hand = $Hand
+		if not hand.has_meta("_original_position"):
+			hand.set_meta("_original_position", hand.position)
+		var base_pos = hand.get_meta("_original_position")
+		hand.position = base_pos + camera_offset
+		hand.scale = Vector2(camera_zoom, camera_zoom)
+
+func _camera_reset_transform() -> void:
+	# 重置所有战斗单位的缩放和位置到原始状态
+	camera_zoom = 1.0
+	camera_offset = Vector2.ZERO
+	
+	if has_node("Player"):
+		var p = $Player
+		if p.has_meta("_base_screen_x"):
+			p.position.x = p.get_meta("_base_screen_x")
+		p.scale = Vector2.ONE
+	
+	if has_node("EnemyContainer"):
+		var ec = $EnemyContainer
+		ec.scale = Vector2.ONE
+		for child in ec.get_children():
+			if child is BaseCombatant and child.has_meta("_base_screen_x"):
+				child.position.x = child.get_meta("_base_screen_x")
+				child.scale = Vector2.ONE
+	
+	if has_node("Hand"):
+		var hand = $Hand
+		if hand.has_meta("_original_position"):
+			hand.position = hand.get_meta("_original_position")
+		hand.scale = Vector2.ONE
 
 func _get_combat_nodes() -> Array[Control]:
 	var nodes: Array[Control] = []
@@ -613,11 +653,9 @@ func _camera_fit_all_combatants() -> void:
 	_apply_camera_transform()
 
 func _on_combat_ended_camera():
-	# 战斗结束重置
-	camera_zoom = 1.0
-	camera_offset = Vector2.ZERO
+	# 战斗结束重置所有战斗单位的变换
 	is_pinching = false
-	_apply_camera_transform()
+	_camera_reset_transform()
 
 # 移动战斗单位
 func move_combatant(combatant: BaseCombatant, new_x: float) -> void:

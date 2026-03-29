@@ -29,6 +29,10 @@ func _update_visual_position() -> void:
 	
 	# 更新节点位置
 	position.x = screen_x - size.x / 2
+	
+	# 记录基准屏幕位置（供 Combat 镜头系统使用）
+	# 战斗开始时 Combat._save_original_positions() 会读取此值
+	set_meta("_base_screen_x", position.x)
 
 ## 获取战斗单位位置
 func get_position_x() -> float:
