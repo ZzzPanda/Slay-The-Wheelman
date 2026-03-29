@@ -26,8 +26,8 @@ static func get_weapon_range(weapon_id: String) -> Dictionary:
 		return {"min": 0.0, "max": 150.0}
 	
 	return {
-		"min": weapon_data.weapon_min_range if weapon_data.has("weapon_min_range") else 0.0,
-		"max": weapon_data.weapon_max_range if weapon_data.has("weapon_max_range") else 150.0
+		"min": weapon_data.attack_range_min,
+		"max": weapon_data.attack_range_max
 	}
 
 ## 使用 Tween 平滑移动作战单位
