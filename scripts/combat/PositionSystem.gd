@@ -31,17 +31,26 @@ static func get_weapon_range(weapon_id: String) -> Dictionary:
 	}
 
 ## 使用 Tween 平滑移动作战单位
+## duration=0 时直接瞬移
 static func move_combatant(combatant: BaseCombatant, target_x: float, duration: float = 0.3, callback: Callable = Callable()) -> void:
 	var clamped_x = clamp(target_x, 0.0, COMBAT_WIDTH)
+	
+	if duration <= 0:
+		# 瞬移：直接设置并同步镜头基准
+		combatant.position_x = clamped_x
+		combatant.sync_camera_base()
+		if callback.is_valid():
+			callback.call()
+		return
 	
 	var tween = combatant.create_tween()
 	tween.tween_property(combatant, "position_x", clamped_x, duration).set_trans(Tween.TRANS_SINE)
 	
 	if callback.is_valid():
-		if duration > 0:
-			tween.finished.connect(callback)
-		else:
-			callback.call()
+		tween.finished.connect(callback)
+	
+	# tween 完成后同步镜头基准位置
+	tween.finished.connect(combatant.sync_camera_base)
 
 ## 应用击退 - 将作战单位推离击退源
 static func apply_knockback(combatant: BaseCombatant, knockback_source_x: float, force: float, duration: float = 0.2) -> void:

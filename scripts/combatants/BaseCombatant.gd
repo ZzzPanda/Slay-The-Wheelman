@@ -34,6 +34,10 @@ func _update_visual_position() -> void:
 	# 战斗开始时 Combat._save_original_positions() 会读取此值
 	set_meta("_base_screen_x", position.x)
 
+## 同步镜头基准位置（由 PositionSystem 在 tween 动画完成后调用）
+func sync_camera_base() -> void:
+	_update_visual_position()
+
 ## 获取战斗单位位置
 func get_position_x() -> float:
 	return position_x
