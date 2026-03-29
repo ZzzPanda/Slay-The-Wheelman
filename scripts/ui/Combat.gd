@@ -482,25 +482,23 @@ func _input(event: InputEvent):
 	if not in_combat:
 		return
 	
-	# 鼠标滚轮缩放和拖动
+	# 鼠标滚轮缩放
 	if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 		_camera_zoom(-ZOOM_SPEED)
+		return
 	elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 		_camera_zoom(ZOOM_SPEED)
+		return
 	elif event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			_camera_start_drag(event.position)
 		else:
 			_camera_end_drag()
-	return  # 鼠标事件不继续处理
-	
-	# 鼠标拖动
-	if event is InputEventMouseMotion and is_dragging:
-		_camera_pan(event.relative)
 		return
 	
-	# 触摸事件 - 只在战斗中进行
-	if not in_combat:
+	# 鼠标拖动（桌面端：按住左键移动鼠标）
+	if event is InputEventMouseMotion and is_dragging:
+		_camera_pan(event.relative)
 		return
 	
 	# 移动端触摸处理
