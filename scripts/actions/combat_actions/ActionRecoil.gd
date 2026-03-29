@@ -14,10 +14,19 @@ func get_action_name() -> String:
 	return "Recoil"
 
 func _execute_action(_targets: Array[BaseCombatant], _player: Player) -> void:
-	# 获取后坐力参数
-	var recoil_force = get_metadata_value("recoil_force", 20.0)
-	var attack_direction = get_metadata_value("attack_direction", 1.0)
-	var duration = get_metadata_value("duration", 0.2)
+	# 先执行拦截器（允许 status effect、artifact 修改后坐力参数）
+	var action_interceptor_processors: Array[ActionInterceptorProcessor] = _intercept_action()
+	
+	# 获取后坐力参数（可能被拦截器修改）
+	var recoil_force = 20.0
+	var attack_direction = 1.0
+	var duration = 0.2
+	
+	# 使用第一个 processor 的 shadowed values
+	if len(action_interceptor_processors) > 0:
+		recoil_force = action_interceptor_processors[0].get_shadowed_action_values("recoil_force", 20.0)
+		attack_direction = action_interceptor_processors[0].get_shadowed_action_values("attack_direction", 1.0)
+		duration = action_interceptor_processors[0].get_shadowed_action_values("duration", 0.2)
 	
 	# 后坐力方向与攻击方向相反
 	var recoil_direction = -sign(attack_direction)

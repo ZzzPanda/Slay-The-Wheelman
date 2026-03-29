@@ -14,10 +14,20 @@ func get_action_name() -> String:
 	return "Knockback"
 
 func _execute_action(_targets: Array[BaseCombatant], _player: Player) -> void:
-	# 获取击退参数
-	var knockback_force = get_metadata_value("knockback_force", 30.0)
-	var knockback_source_x = get_metadata_value("knockback_source_x", 500.0)
-	var duration = get_metadata_value("duration", 0.2)
+	# 先执行拦截器（允许 status effect、artifact 修改击退参数）
+	# 注意：knockback 是统一参数，拦截器修改的是同一份值，应用到所有目标
+	var action_interceptor_processors: Array[ActionInterceptorProcessor] = _intercept_action()
+	
+	# 获取击退参数（可能被拦截器修改）
+	var knockback_force = 30.0
+	var knockback_source_x = 500.0
+	var duration = 0.2
+	
+	# 使用第一个 processor 的 shadowed values（拦截器返回的 processors 共享同一套 shadowed values）
+	if len(action_interceptor_processors) > 0:
+		knockback_force = action_interceptor_processors[0].get_shadowed_action_values("knockback_force", 30.0)
+		knockback_source_x = action_interceptor_processors[0].get_shadowed_action_values("knockback_source_x", 500.0)
+		duration = action_interceptor_processors[0].get_shadowed_action_values("duration", 0.2)
 	
 	# 应用击退
 	var has_targets = false
