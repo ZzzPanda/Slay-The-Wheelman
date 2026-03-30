@@ -67,13 +67,17 @@ func populate_character_info(character_object_id: String) -> void:
 		character_money_label.text = "Money: {0}".format([character_data.character_starting_money])
 		character_description_label.text = character_data.character_description
 		
-		# TODO potentially update ui to support multiple starter artifacts displayed
+		# 显示角色初始神器（仅显示第一个，多余的显示数量）
 		if len(character_data.character_starting_artifact_ids) > 0:
 			var artifact_data: ArtifactData = Global.get_artifact_data(character_data.character_starting_artifact_ids[0])
 			if artifact_data != null:
 				character_artifact_texture_rect.texture = load(artifact_data.artifact_texture_path)
 				character_artifact_name_label.text = artifact_data.artifact_name
-				character_artifact_description_label.text = artifact_data.artifact_description
+				# 如果有多个神器，显示完整描述；否则显示 artifact 描述
+				if len(character_data.character_starting_artifact_ids) > 1:
+					character_artifact_description_label.text = "[+%d 神器] %s" % [len(character_data.character_starting_artifact_ids), artifact_data.artifact_description]
+				else:
+					character_artifact_description_label.text = artifact_data.artifact_description
 
 func _on_start_run_button_up():
 	# get the seed and start the run

@@ -2,13 +2,15 @@
 extends Control
 class_name CombatRangeIndicator
 
-@onready var player = Global.get_player()
-
 ## 范围线条颜色
 var range_color: Color = Color(1.0, 0.4, 0.4, 0.6)  # 红色半透明
 
 ## 线条粗细
 var line_thickness: float = 2.0
+
+## 战斗区域边距（与 BaseCombatant 一致）
+const COMBAT_MARGIN: float = 100.0
+const COMBAT_WIDTH: float = 1000.0
 
 func _ready():
 	# 默认隐藏
@@ -23,10 +25,13 @@ func _draw():
 	if not visible:
 		return
 	
-	# 从 PlayerData 获取玩家位置
-	var player_x = 200.0
-	if Global.has("player_data"):
-		player_x = Global.player_data.player_position_x
+	# 从玩家节点获取位置（更可靠）
+	var player: Player = Global.get_player()
+	if player == null:
+		return
+	
+	# 使用玩家的逻辑坐标
+	var player_logic_x: float = player.position_x
 	
 	# 获取当前悬停卡牌的范围
 	var range_min = _current_range_min
@@ -35,27 +40,34 @@ func _draw():
 	if range_max <= 0:
 		return
 	
-	# 绘制范围区域（从玩家位置到攻击范围）
-	var start_x = player_x
-	var end_x = player_x + range_max
+	# 获取视口宽度
+	var viewport_width = get_viewport_rect().size.x
+	var combat_area_width = viewport_width - COMBAT_MARGIN * 2
+	
+	# 将逻辑坐标 (0-1000) 转换为屏幕坐标
+	var player_screen_x = COMBAT_MARGIN + (player_logic_x / COMBAT_WIDTH) * combat_area_width
+	
+	# 计算范围区域的屏幕坐标
+	var start_screen_x = player_screen_x
+	var end_screen_x = player_screen_x + range_max
 	
 	# 绘制攻击范围线条（在战斗区域底部）
 	var battle_bottom = get_viewport_rect().size.y - 100
 	var battle_top = battle_bottom - 50
 	
 	# 绘制范围区域
-	var rect = Rect2(start_x, battle_bottom, range_max, 20)
+	var rect = Rect2(start_screen_x, battle_bottom, range_max, 20)
 	draw_rect(rect, range_color, true)
 	
 	# 绘制边线
-	draw_line(Vector2(start_x, battle_bottom), Vector2(start_x, battle_top), range_color, line_thickness)
-	draw_line(Vector2(end_x, battle_bottom), Vector2(end_x, battle_top), range_color, line_thickness)
-	draw_line(Vector2(start_x, battle_bottom), Vector2(end_x, battle_bottom), range_color, line_thickness)
+	draw_line(Vector2(start_screen_x, battle_bottom), Vector2(start_screen_x, battle_top), range_color, line_thickness)
+	draw_line(Vector2(end_screen_x, battle_bottom), Vector2(end_screen_x, battle_top), range_color, line_thickness)
+	draw_line(Vector2(start_screen_x, battle_bottom), Vector2(end_screen_x, battle_bottom), range_color, line_thickness)
 	
 	# 绘制文字标签
 	var font = ThemeDB.fallback_font
-	var label_text = "攻击范围: %d - %d" % [range_min, range_max]
-	draw_string(font, Vector2(start_x + 10, battle_bottom - 10), label_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
+	var label_text = "范围: %d - %d" % [range_min, range_max]
+	draw_string(font, Vector2(start_screen_x + 10, battle_bottom - 10), label_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
 
 var _current_range_min: float = 0.0
 var _current_range_max: float = 0.0

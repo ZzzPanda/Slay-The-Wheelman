@@ -4,7 +4,7 @@ class_name ActionRecoil
 
 ## 后坐力参数
 ## recoil_force: 后坐力力度（像素）
-## attack_direction: 攻击方向（1.0 = 向右，-1.0 = 向左）
+## attack_direction: 攻击方向（正值 = 向右，负值 = 向左，0 = 默认向右）
 ## duration: 后坐力动画持续时间（秒）
 
 func _init() -> void:
@@ -16,11 +16,15 @@ func get_action_name() -> String:
 func _execute_action(_targets: Array[BaseCombatant], _player: Player) -> void:
 	# 获取后坐力参数
 	var recoil_force = get_metadata_value("recoil_force", 20.0)
-	var attack_direction = get_metadata_value("attack_direction", 1.0)
+	var attack_direction = get_metadata_value("attack_direction", 0.0)
 	var duration = get_metadata_value("duration", 0.2)
 	
-	# 后坐力方向与攻击方向相反
-	var recoil_direction = -sign(attack_direction)
+	# 计算后坐力方向：如果攻击方向为 0，使用默认值 1.0（右）
+	var recoil_direction: float
+	if attack_direction == 0.0:
+		recoil_direction = -1.0  # 默认向左后坐力（玩家向右攻击）
+	else:
+		recoil_direction = -sign(attack_direction)  # 与攻击方向相反
 	
 	# 应用后坐力到玩家
 	if _player != null:
