@@ -75,17 +75,16 @@ func play_attack_animation() -> void:
 
 #region Block
 func set_block(_amount: int) -> void:
-	# override
-	breakpoint
+	# override in subclass
+	pass
 
 func get_block() -> int:
-	# override
-	breakpoint
+	# override in subclass
 	return 0
 
 func add_block(_amount: int) -> void:
-	# override
-	breakpoint
+	# override in subclass
+	pass
 
 func generate_reset_block_action() -> void:
 	# generates a reset block action for this combatant and adds it to the action stack
@@ -116,8 +115,8 @@ func is_alive() -> bool:
 
 ## Does damage to combatant and returns [unblocked damage dealt, overkill damage (if combatant dies)]
 func damage(_damage: int, _bypass_block: bool = false) -> Array[int]:
-	breakpoint
-	return [0,0,0]
+	# override in subclass - return [unblocked_damage, damage_to_zero, overkill]
+	return [0, 0, 0]
 #endregion
 
 #region Custom UI
